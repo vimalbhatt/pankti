@@ -4,13 +4,22 @@ import com.thoughtworks.xstream.XStream;
 import se.kth.castor.pankti.instrument.converters.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public interface AdviceTemplate {
+    public static final String PROPERTY_FILE_PATH = "/tmp/pankti-object-data/paths.properties";
+    public static final int FILE_NAME_LENGTH = 50;
+
     XStream xStream = new XStream();
 
     static void setUpXStream() {
@@ -41,7 +50,7 @@ public interface AdviceTemplate {
             String storageDir = "/tmp/pankti-object-data/";
             Files.createDirectories(Paths.get(storageDir));
             String invokedMethodsCSVFilePath = setUpInvokedMethodsCSVFile(storageDir);
-            String filePath = storageDir + path;
+            String filePath = storageDir + getUniqueCode(path);
             fileNameMap.put(Type.RECEIVING_PRE, filePath + "-receiving.xml");
             fileNameMap.put(Type.RECEIVING_POST, filePath + "-receiving-post.xml");
             fileNameMap.put(Type.PARAMS, filePath + "-params.xml");
@@ -56,4 +65,44 @@ public interface AdviceTemplate {
         }
         return fileNameMap;
     }
+
+    static String getUniqueCode(String path) throws IOException {
+        Properties properties = loadProperties();
+        String uniqueCode = properties.getProperty(path);
+        if (uniqueCode == null) {
+            uniqueCode = generateShortFileName(FILE_NAME_LENGTH);
+            properties.setProperty(path, uniqueCode);
+            saveProperties(properties);
+        }
+        return uniqueCode;
+    }
+
+    static Properties loadProperties() throws IOException {
+        Properties properties = new Properties();
+        File file = new File(PROPERTY_FILE_PATH);
+        if (file.exists()) {
+            try (InputStream inputStream = new FileInputStream(file)) {
+                properties.load(inputStream);
+            }
+        }
+        return properties;
+    }
+
+    static void saveProperties(Properties properties) throws IOException {
+        try (OutputStream outputStream = new FileOutputStream(PROPERTY_FILE_PATH)) {
+            properties.store(outputStream, null);
+        }
+    }
+
+    static String generateShortFileName(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int index = (int) (Math.random() * characters.length());
+            sb.append(characters.charAt(index));
+        }
+        return sb.toString();
+    }
 }
+
+

@@ -36,9 +36,33 @@ public class ObjectXMLParser {
                         new ByteArrayInputStream("</root>".getBytes()));
         return new SequenceInputStream(Collections.enumeration(streams));
     }
+    public static final String PROPERTY_FILE_PATH = "/tmp/pankti-object-data/paths.properties";
+    static Properties loadProperties()  {
+        Properties properties = new Properties();
+        File file = new File(PROPERTY_FILE_PATH);
+        if (file.exists()) {
+            try (InputStream inputStream = new FileInputStream(file)) {
+                properties.load(inputStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return properties;
+    }
+    public String getMappedFileName(String path) {
+        int slashIndex = path.lastIndexOf("\\");
+        int hyphenIndex = path.lastIndexOf("-");
+        String fileName = path.substring(slashIndex + 1, hyphenIndex);
+        String s = path.substring(0, slashIndex + 1) + loadProperties().getProperty(fileName) + path.substring(hyphenIndex);
+        System.out.println("Mapped " + path + " to " + s);
+        return s;
+    }
 
     public File findXMLFileByObjectType(String basePath, String type) {
-        return new File(basePath + type);
+        System.out.println("###" + basePath + " " + type);
+        String mappedFileName = getMappedFileName(basePath +  type);
+        System.out.println(mappedFileName);
+        return new File(mappedFileName);
     }
 
     public String cleanUpRawObjectXML(String rawXMLForObject) {
@@ -49,7 +73,7 @@ public class ObjectXMLParser {
     }
 
     private void removeAddedAttributes(Node thisNode) {
-        List<String> attributesToRemove = List.of("uuid", "parent-uuid", "timestamp");
+        List<String> attributesToRemove = Arrays.asList("uuid", "parent-uuid", "timestamp");
         for (String attributeToRemove : attributesToRemove) {
             if (thisNode.getAttributes().getNamedItem(attributeToRemove) != null)
                 thisNode.getAttributes().removeNamedItem(attributeToRemove);
@@ -174,10 +198,12 @@ public class ObjectXMLParser {
                     List<String> nestedInvocationFQNs = new ArrayList<>();
                     String filePathNestedParams = directory + nestedInvocationObjectFilePrefix + declaringType + "." + methodName +
                             nestedInvocationPostfix + paramObjectsFilePostfix;
+                    String filePathNestedParamsMappedFileName = getMappedFileName(filePathNestedParams);
                     String filePathNestedReturned = directory + nestedInvocationObjectFilePrefix + declaringType + "." + methodName +
                             nestedInvocationPostfix + returnedObjectFilePostfix;
+                    String filePathNestedReturnedMappedFileName = getMappedFileName(filePathNestedReturned);
                     try {
-                        List<ObjectProfileElement> nestedParamElements = parseXMLInFile(new File(filePathNestedParams));
+                        List<ObjectProfileElement> nestedParamElements = parseXMLInFile(new File(filePathNestedParamsMappedFileName));
                         for (ObjectProfileElement nestedParamElement : nestedParamElements) {
                             if (parentUUIDs.contains(nestedParamElement.getUuid())) {
                                 nestedParamObjects.add(nestedParamElement.getRawXML());
@@ -185,7 +211,7 @@ public class ObjectXMLParser {
                                 nestedInvocationFQNs.add(declaringType + "." + mockedMethodWithParams);
                             }
                         }
-                        List<ObjectProfileElement> nestedReturnedElements = parseXMLInFile(new File(filePathNestedReturned));
+                        List<ObjectProfileElement> nestedReturnedElements = parseXMLInFile(new File(filePathNestedReturnedMappedFileName));
                         for (ObjectProfileElement nestedReturnedElement : nestedReturnedElements) {
                             if (parentUUIDs.contains(nestedReturnedElement.getUuid())) {
                                 nestedUuids.add(nestedReturnedElement.getUuid());
@@ -205,8 +231,8 @@ public class ObjectXMLParser {
                             ));
                         }
                     } catch (Exception e) {
-                        System.out.println("NO NESTED OBJECT FILE - " + filePathNestedParams + " AND / OR " +
-                                filePathNestedReturned + " - SKIPPING");
+                        System.out.println("NO NESTED OBJECT FILE - " + filePathNestedParams + " " + filePathNestedParamsMappedFileName + " AND / OR " +
+                                filePathNestedReturned + " " + filePathNestedParamsMappedFileName + " - SKIPPING");
                         continue;
                     }
                 }
