@@ -338,7 +338,12 @@ public class MockableSelector {
     }
 
     private static boolean isMockableParentPrivateOrStatic(CtInvocation<?> invocation) {
-        CtTypeReference<?> mockableDeclaringType = getDeclaringType(getExecutable(invocation));
+        CtExecutableReference<?> executable = getExecutable(invocation);
+        CtTypeReference<?> mockableDeclaringType = getDeclaringType(executable);
+        if(Objects.isNull(mockableDeclaringType) ) {
+            System.out.println(invocation + " has null type");
+            return false;
+        }
         Set<ModifierKind> modifiers = mockableDeclaringType.getModifiers();
         return modifiers.contains(ModifierKind.STATIC) || modifiers.contains(ModifierKind.PRIVATE);
     }
