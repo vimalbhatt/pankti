@@ -222,7 +222,7 @@ public class MockGenerator {
         }
 
         generatedTest = MockGeneratorUtil.cleanUpBaseMethodCloneForMocking(baseMethod,
-                MockGeneratorUtil.arePrimitiveOrString(List.of(targetMUT.getReturnType())),
+                MockGeneratorUtil.arePrimitiveOrString(Arrays.asList(targetMUT.getReturnType())),
                 targetMUT.getReturnType().equals("void"),
                 new LinkedHashSet<>(mockedParamIndices),
                 false);
@@ -310,7 +310,7 @@ public class MockGenerator {
         }
 
         CtStatementList returnStatements;
-        if (nestedReturned != null & !MockGeneratorUtil.arePrimitiveOrString(List.of(returnType))) {
+        if (nestedReturned != null & !MockGeneratorUtil.arePrimitiveOrString(Arrays.asList(returnType))) {
             if (nestedReturned.length() < 1000) {
                 returnStatements = MockGeneratorUtil.createReturnedVariableAndParse(returnType, nestedReturned);
             } else {
@@ -333,7 +333,7 @@ public class MockGenerator {
         mockitoWhenInvocation.setTarget(factory.createTypeAccess(factory.createCtTypeReference(Class.forName(MOCKITO_REFERENCE))));
 
         // Mockito.when(mockField.mockedMethod(param1, param2))
-        mockitoWhenInvocation.setArguments(List.of(factory.createCodeSnippetExpression(
+        mockitoWhenInvocation.setArguments(Arrays.asList(factory.createCodeSnippetExpression(
                 String.format("%s.%s(%s)",
                         mockVariableName,
                         MethodInvocationUtil.getMethodName(mockedMethodWithParams),
@@ -346,9 +346,9 @@ public class MockGenerator {
         mockitoThenReturnInvocation.setExecutable(executableReferenceForMockitoThen);
         mockitoThenReturnInvocation.setTarget(mockitoWhenInvocation);
         if (nestedReturned == null) {
-            mockitoThenReturnInvocation.setArguments(List.of(factory.createLiteral(null)));
+            mockitoThenReturnInvocation.setArguments(Arrays.asList(factory.createLiteral(null)));
         } else {
-            mockitoThenReturnInvocation.setArguments(List.of(factory.createCodeSnippetExpression(nestedReturned)));
+            mockitoThenReturnInvocation.setArguments(Arrays.asList(factory.createCodeSnippetExpression(nestedReturned)));
         }
         whenThenStatements.addStatement(mockitoThenReturnInvocation);
 
@@ -382,7 +382,7 @@ public class MockGenerator {
         CtInvocation mockedMethodInvocation = factory.createInvocation();
         mockedMethodInvocation.setExecutable(executableReferenceForMockedMethod);
         mockedMethodInvocation.setTarget(mockitoVerifyInvocation);
-        mockedMethodInvocation.setArguments(List.of(factory.createCodeSnippetExpression(nestedParams)));
+        mockedMethodInvocation.setArguments(Arrays.asList(factory.createCodeSnippetExpression(nestedParams)));
         return mockedMethodInvocation;
     }
 }

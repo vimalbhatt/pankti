@@ -18,6 +18,7 @@ import spoon.reflect.declaration.ModifierKind;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class MethodUtilTest {
     @BeforeAll
     public static void setUpLauncherAndModel() throws URISyntaxException {
         methodProcessor = new MethodProcessor(true);
-        panktiMain = new PanktiMain(Path.of("src/test/resources/jitsi-videobridge"), false);
+        panktiMain = new PanktiMain(Paths.get("src/test/resources/jitsi-videobridge"), false);
         panktiLauncher = new PanktiLauncher();
         mavenLauncher = panktiLauncher.getMavenLauncher(panktiMain.getProjectPath().toString(),
                 panktiMain.getProjectPath().getFileName().toString());
@@ -58,7 +59,7 @@ public class MethodUtilTest {
                 .keySet()
                 .stream()
                 .map(k -> k.getPath().toString())
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
     }
 
     private static List<CtMethod<?>> getListOfMethods() {

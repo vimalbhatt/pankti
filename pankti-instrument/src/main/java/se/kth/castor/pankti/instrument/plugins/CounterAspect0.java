@@ -110,7 +110,7 @@ public class CounterAspect0 {
                     objectFileWriter.write(invocationString + INVOCATION_COUNT);
                     objectFileWriter.close();
                 } else {
-                    String content = Files.readString(Paths.get(invocationCountFilePath));
+                    String content = new String(Files.readAllBytes(Paths.get(invocationCountFilePath)));
                     Pattern pattern = Pattern.compile(invocationString + "(\\d+$)");
                     Matcher matcher = pattern.matcher(content);
                     if (matcher.find()) {

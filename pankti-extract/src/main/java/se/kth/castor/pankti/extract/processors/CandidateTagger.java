@@ -31,7 +31,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             staticMethods.add(ctMethod);
             isStatic = true;
         }
-        return Map.entry("static", isStatic);
+        return new AbstractMap.SimpleEntry<>("static", isStatic);
     }
 
     private Map.Entry<String, Boolean> getIfs(CtMethod<?> ctMethod) {
@@ -40,7 +40,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             methodsWithIfConditions.add(ctMethod);
             hasIfs = true;
         }
-        return Map.entry("ifs", hasIfs);
+        return new AbstractMap.SimpleEntry<>("ifs", hasIfs);
     }
 
     private Map.Entry<String, Boolean> getSwitches(CtMethod<?> ctMethod) {
@@ -49,7 +49,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             methodsWithSwitchStatements.add(ctMethod);
             hasSwitches = true;
         }
-        return Map.entry("switches", hasSwitches);
+        return new AbstractMap.SimpleEntry<>("switches", hasSwitches);
     }
 
     private Map.Entry<String, Boolean> getConditionals(CtMethod<?> ctMethod) {
@@ -58,7 +58,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             methodsWithConditionalOperators.add(ctMethod);
             hasConditionals = true;
         }
-        return Map.entry("conditionals", hasConditionals);
+        return new AbstractMap.SimpleEntry<>("conditionals", hasConditionals);
     }
 
     private Map.Entry<String, Boolean> getNumberOfStatements(CtMethod<?> ctMethod) {
@@ -67,7 +67,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             methodsWithMultipleStatements.add(ctMethod);
             hasMultipleStatements = true;
         }
-        return Map.entry("multiple_statements", hasMultipleStatements);
+        return new AbstractMap.SimpleEntry<>("multiple_statements", hasMultipleStatements);
     }
 
     private Map.Entry<String, Boolean> getLocalVariables(CtMethod<?> ctMethod) {
@@ -76,7 +76,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             methodsWithLocalVariables.add(ctMethod);
             hasLocalVariables = true;
         }
-        return Map.entry("local_variables", hasLocalVariables);
+        return new AbstractMap.SimpleEntry<>("local_variables", hasLocalVariables);
     }
 
     private Map.Entry<String, Boolean> getReturns(CtMethod<?> ctMethod) {
@@ -87,7 +87,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
         } else {
             methodsNotReturningAValue.add(ctMethod);
         }
-        return Map.entry("returns", returnsValue);
+        return new AbstractMap.SimpleEntry<>("returns", returnsValue);
     }
 
     private Map.Entry<String, Boolean> getLoops(CtMethod<?> ctMethod) {
@@ -96,7 +96,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             methodsWithLoops.add(ctMethod);
             hasLoops = true;
         }
-        return Map.entry("loops", hasLoops);
+        return new AbstractMap.SimpleEntry<>("loops", hasLoops);
     }
 
     private Map.Entry<String, Boolean> getParameters(CtMethod<?> ctMethod) {
@@ -105,7 +105,7 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             methodsWithParameters.add(ctMethod);
             hasParameters = true;
         }
-        return Map.entry("parameters", hasParameters);
+        return new AbstractMap.SimpleEntry<>("parameters", hasParameters);
     }
 
     private Map.Entry<String, Boolean> returnsPrimitives(CtMethod<?> ctMethod) {
@@ -114,14 +114,15 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
             methodsReturningAPrimitive.add(ctMethod);
             returnsPrimitives = true;
         }
-        return Map.entry("returns_primitives", returnsPrimitives);
+        return new AbstractMap.SimpleEntry<>("returns_primitives", returnsPrimitives);
     }
 
     public Map<CtMethod<?>, Map<String, Boolean>> tagMethod(CtMethod<?> method) {
         assert !(method.hasAnnotation(Deprecated.class) | method.isAbstract());
         Map<CtMethod<?>, Map<String, Boolean>> methodTags = new HashMap<>();
 
-        Map<String, Boolean> tagMap = Map.ofEntries(
+        Map<String, Boolean> tagMap = new HashMap<>();
+        for ( Map.Entry <String, Boolean> ent : Arrays.asList(
                 isStatic(method),
                 getIfs(method),
                 getConditionals(method),
@@ -131,7 +132,9 @@ public class CandidateTagger extends AbstractProcessor<CtMethod<?>> {
                 getReturns(method),
                 returnsPrimitives(method),
                 getLoops(method),
-                getParameters(method));
+                getParameters(method))){
+            tagMap.put(ent.getKey(),ent.getValue());
+        }
         methodTags.put(method, tagMap);
         return methodTags;
     }

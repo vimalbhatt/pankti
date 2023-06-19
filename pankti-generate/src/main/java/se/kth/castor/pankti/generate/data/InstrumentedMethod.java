@@ -3,6 +3,7 @@ package se.kth.castor.pankti.generate.data;
 import se.kth.castor.pankti.generate.util.MockGeneratorUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class InstrumentedMethod {
     }
 
     public String setParentSimpleName() {
-        List<String> components = List.of(parentFQN.split("\\."));
+        List<String> components = Arrays.asList(parentFQN.split("\\."));
         return components.get(components.size() - 1);
     }
 

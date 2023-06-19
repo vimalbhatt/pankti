@@ -1,11 +1,11 @@
 package se.kth.castor.pankti.generate.generators;
 
-import se.kth.castor.pankti.generate.data.NestedInvocation;
+import se.kth.castor.pankti.generate.data.*;
 import se.kth.castor.pankti.generate.parsers.CSVFileParser;
 import se.kth.castor.pankti.generate.data.InstrumentedMethod;
 import se.kth.castor.pankti.generate.parsers.ObjectXMLParser;
 import se.kth.castor.pankti.generate.data.SerializedObject;
-import se.kth.castor.pankti.generate.util.MockGeneratorUtil;
+import se.kth.castor.pankti.generate.util.*;
 import se.kth.castor.pankti.generate.util.TestGeneratorUtil;
 import spoon.Launcher;
 import spoon.reflect.CtModel;
@@ -523,7 +523,7 @@ public class TestGenerator {
 
             // Test - OO
             if (!instrumentedMethod.getReturnType().equals("void") &
-                    MockGeneratorUtil.arePrimitiveOrString(List.of(instrumentedMethod.getReturnType()))) {
+                    MockGeneratorUtil.arePrimitiveOrString(Arrays.asList(instrumentedMethod.getReturnType()))) {
                 CtMethod<?> testOO = mockGenerator.generateTestByCategory(testMethodCounter, MockOracle.OO, mockMethod, serializedObject, generatedClass, instrumentedMethod);
                 generatedClass.addMethod(testOO);
                 generatedTestsWithMocks.add(testOO);
@@ -549,7 +549,7 @@ public class TestGenerator {
             if (generatedClass.getMethodsByName(methodNameCO).size() == 0 &
                     serializedObject.getNestedSerializedObjects().size() > 0) {
                 MethodSequenceGenerator sequenceGenerator = new MethodSequenceGenerator(factory);
-                CtMethod<?> testCO = sequenceGenerator.generateTestToVerifyMethodSequence(Set.of(testPO), serializedObject);
+                CtMethod<?> testCO = sequenceGenerator.generateTestToVerifyMethodSequence(Collections.unmodifiableSet(new HashSet(Arrays.asList(testPO))), serializedObject);
                 testCO.setSimpleName(methodNameCO);
                 testCO.addAnnotation(testAnnotation);
                 testCO.addAnnotation(MockGeneratorUtil.generateDisplayName(testMethodCounter, MockOracle.CO, instrumentedMethod.getMethodName(),

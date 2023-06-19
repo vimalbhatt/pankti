@@ -107,7 +107,7 @@ public class MethodAspect0Nested0 {
         }
 
         public static String handleNonPrimitiveParamSerialization(Object objectToWrite) {
-            List<String> primitives = List.of("boolean", "byte", "char", "double", "float",
+            List<String> primitives = Arrays.asList("boolean", "byte", "char", "double", "float",
                     "int", "long", "short", "java.lang.String");
             String[] paramTypes = TargetMethodAdvice.class.getAnnotation(Pointcut.class).methodParameterTypes();
 
@@ -192,7 +192,7 @@ public class MethodAspect0Nested0 {
                     objectFileWriter.write(invocationString + INVOCATION_COUNT);
                     objectFileWriter.close();
                 } else {
-                    String content = Files.readString(Paths.get(invocationCountFilePath));
+                    String content = new String(Files.readAllBytes(Paths.get(invocationCountFilePath)));
                     Pattern pattern = Pattern.compile(invocationString + "(\\d+$)");
                     Matcher matcher = pattern.matcher(content);
                     if (matcher.find()) {

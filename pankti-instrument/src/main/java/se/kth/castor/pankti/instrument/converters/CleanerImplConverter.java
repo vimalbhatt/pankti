@@ -6,7 +6,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
-import java.lang.ref.Cleaner;
+
 
 public class CleanerImplConverter implements Converter {
     @Override
@@ -24,7 +24,6 @@ public class CleanerImplConverter implements Converter {
                 aClass.getCanonicalName().equals("java.lang.ref.Cleaner.Cleanable") ||
                 aClass.getCanonicalName().equals("jdk.internal.ref.CleanerImpl") ||
                 aClass.getCanonicalName().equals("jdk.internal.ref.CleanerImpl.PhantomCleanableRef") ||
-                Cleaner.class.isAssignableFrom(aClass) ||
-                Cleaner.Cleanable.class.isAssignableFrom(aClass);
+                sun.misc.Cleaner.class.isAssignableFrom(aClass);
     }
 }

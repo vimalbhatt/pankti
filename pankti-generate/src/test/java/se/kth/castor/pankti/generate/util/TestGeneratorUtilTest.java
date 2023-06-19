@@ -9,6 +9,7 @@ import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.factory.Factory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +31,7 @@ public class TestGeneratorUtilTest {
     @Test
     public void testThatTheCorrectParamListPostfixIsPrepared() {
         assertEquals("", TestGeneratorUtil.getParamListPostFix(new ArrayList<>()));
-        String postfix = TestGeneratorUtil.getParamListPostFix(List.of("java.lang.String",
+        String postfix = TestGeneratorUtil.getParamListPostFix(Arrays.asList("java.lang.String",
                 "se.kth.castor.rick.Roll", "byte[]"));
         assertEquals("_java.lang.String,se.kth.castor.rick.Roll,byte[]", postfix);
     }
@@ -60,7 +61,7 @@ public class TestGeneratorUtilTest {
         CtMethod<?> methodToTestParams = factory.createMethod();
         CtParameter<?> intParam = factory.createParameter().setType(factory.createReference("int"));
         CtParameter<?> boolParam = factory.createParameter().setType(factory.createReference("boolean"));
-        methodToTestParams.setParameters(List.of(intParam, boolParam));
+        methodToTestParams.setParameters(Arrays.asList(intParam, boolParam));
         assertTrue(testGeneratorUtil.allMethodParametersArePrimitive(methodToTestParams));
         CtParameter<?> stringParam = factory.createParameter().setType(factory.createCtTypeReference(String.class));
         CtParameter<?> domainParam = factory.createParameter().setType(factory.createReference("se.kth.castor.rick.Roll"));

@@ -19,7 +19,7 @@ public class MockGeneratorUtil {
     private static final String MOCKITO_ARGUMENT_MATCHER_REFERENCE = "org.mockito.ArgumentMatchers";
     private static final String JUNIT_JUPITER_DISPLAYNAME_REFERENCE = "org.junit.jupiter.api.DisplayName";
     private static final String invocationRegex = "(.+?)(\\.[a-zA-Z0-9]+\\(.*\\))";
-    private static final List<String> primitives = List.of(
+    private static final List<String> primitives = Arrays.asList(
             "boolean", "byte", "char", "double", "float", "int", "long", "short", "java.lang.String");
 
     public static CtTypeReference<?> findOrCreateTypeReference(String type) {
@@ -240,7 +240,7 @@ public class MockGeneratorUtil {
     }
 
     public static List<String> getListOfInvocationsFromNestedMethodMap(String nestedMethodMap) {
-        List<String> methodInvocations = List.of(nestedMethodMap.split(",\\{"));
+        List<String> methodInvocations = Arrays.asList(nestedMethodMap.split(",\\{"));
         return methodInvocations;
     }
 
@@ -252,7 +252,7 @@ public class MockGeneratorUtil {
      * @return FIELD or PARAMETER
      */
     public static List<String> getNestedInvocationTargetTypesFromNestedMethodMap(String nestedMethodMap) {
-        List<String> methodInvocations = List.of(nestedMethodMap.split(",\\{"));
+        List<String> methodInvocations = Arrays.asList(nestedMethodMap.split(",\\{"));
         List<String> targetTypes = new ArrayList<>();
         for (String invocation : methodInvocations) {
             String endString = invocation.contains("PARAMETER") ?
@@ -268,7 +268,7 @@ public class MockGeneratorUtil {
     }
 
     public static List<Integer> getNestedInvocationParameterIndex(List<String> targetTypes, String nestedMethodMap) {
-        List<String> methodInvocations = List.of(nestedMethodMap.split(",\\{"));
+        List<String> methodInvocations = Arrays.asList(nestedMethodMap.split(",\\{"));
         List<Integer> paramIndices = new ArrayList<>();
 
         for (int i = 0; i < targetTypes.size(); i++) {
@@ -288,7 +288,7 @@ public class MockGeneratorUtil {
     }
 
     public static List<Map<String, String>> getNestedInvocationTargetFieldVisibilityMap(List<String> targetTypes, String nestedMethodMap) {
-        List<String> methodInvocations = List.of(nestedMethodMap.split(",\\{"));
+        List<String> methodInvocations = Arrays.asList(nestedMethodMap.split(",\\{"));
         Map<String, String> methodInvocationTargetFields = new LinkedHashMap<>();
 
         for (int i = 0; i < targetTypes.size(); i++) {
@@ -375,11 +375,11 @@ public class MockGeneratorUtil {
                 "nestedInvocationParams='[",
                 "]',nestedInvocationSignature",
                 invocation);
-        return List.of(params.split(","));
+        return Arrays.asList(params.split(","));
     }
 
     public static List<String> getInvocationMode(String nestedMethodMap) {
-        List<String> methodInvocations = List.of(nestedMethodMap.split(",\\{"));
+        List<String> methodInvocations = Arrays.asList(nestedMethodMap.split(",\\{"));
         List<String> modes = new ArrayList<>();
         for (String invocation : methodInvocations) {
             String mode = findInString(
@@ -427,7 +427,7 @@ public class MockGeneratorUtil {
     public static String handleNonPrimitiveParamsOfNestedInvocation(List<String> paramTypes,
                                                                     SerializedObject serializedObject) {
         StringBuilder arguments = new StringBuilder();
-        List<String> params = List.of(serializedObject.getParamObjects()
+        List<String> params = Arrays.asList(serializedObject.getParamObjects()
                 .replaceAll("</?object-array/?>", "")
                 .trim()
                 .split("\\n"));
@@ -455,7 +455,7 @@ public class MockGeneratorUtil {
     public static String extractParamsOfNestedInvocation(List<String> paramTypes,
                                                          SerializedObject serializedObject) {
         StringBuilder arguments = new StringBuilder();
-        List<String> primitiveParams = List.of(serializedObject.getParamObjects()
+        List<String> primitiveParams = Arrays.asList(serializedObject.getParamObjects()
                 .replaceAll("</?object-array/?>", "")
                 .trim()
                 .split("\\n"));
@@ -557,7 +557,7 @@ public class MockGeneratorUtil {
     }
 
     public static List<String> getReturnTypeFromInvocationMap(String nestedMethodMap) {
-        List<String> methodInvocations = List.of(nestedMethodMap.split(",\\{"));
+        List<String> methodInvocations = Arrays.asList(nestedMethodMap.split(",\\{"));
         List<String> nestedReturnTypes = new ArrayList<>();
         for (String invocation : methodInvocations) {
             String returnType = findInString(
@@ -570,7 +570,7 @@ public class MockGeneratorUtil {
     }
 
     public static List<String> sanitizeNestedInvocationMap(String nestedMethodMap) {
-        List<String> methodInvocations = List.of(nestedMethodMap.split(",\\{"));
+        List<String> methodInvocations = Arrays.asList(nestedMethodMap.split(",\\{"));
         List<String> sanitizedInvocations = new ArrayList<>();
         for (String invocation : methodInvocations) {
             sanitizedInvocations.add(getDeclaringTypeToMockFromInvocationString(invocation) +

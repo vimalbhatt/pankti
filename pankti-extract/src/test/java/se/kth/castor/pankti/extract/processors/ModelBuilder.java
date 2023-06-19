@@ -7,6 +7,8 @@ import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtMethod;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +19,7 @@ public class ModelBuilder {
     static CtModel testModel;
 
     static {
-        panktiMain = new PanktiMain(Path.of("src/test/resources/jitsi-videobridge"), false);
+        panktiMain = new PanktiMain(Paths.get("src/test/resources/jitsi-videobridge"), false);
         panktiLauncher = new PanktiLauncher();
         mavenLauncher = panktiLauncher.getMavenLauncher(panktiMain.getProjectPath().toString(),
                 panktiMain.getProjectPath().getFileName().toString());
@@ -51,6 +53,6 @@ public class ModelBuilder {
         return optionalCtMethod.get();
     }
 
-    public static final List<String> primitives = List.of("void", "boolean", "byte",
+    public static final List<String> primitives = Arrays.asList("void", "boolean", "byte",
             "char", "double", "float", "int", "long", "short", "java.lang.String");
 }
