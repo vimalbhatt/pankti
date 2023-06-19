@@ -17,7 +17,7 @@
     <spoon.core.version>8.0.0</spoon.core.version>
     <maven.build.helper.plugin.version>3.0.0</maven.build.helper.plugin.version>
     <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-    <maven.compiler.plugin.release>11</maven.compiler.plugin.release>
+    <maven.compiler.plugin.release>8</maven.compiler.plugin.release>
     <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
     <maven.assembly.plugin.version>3.2.0</maven.assembly.plugin.version>
     <maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
@@ -121,7 +121,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <release>${maven.compiler.plugin.release}</release>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
       <plugin>
